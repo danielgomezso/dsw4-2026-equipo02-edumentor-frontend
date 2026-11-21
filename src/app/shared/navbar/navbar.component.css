@@ -1,0 +1,113 @@
+.navbar {
+  --color-rol: var(--primario);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1.5rem;
+  background: var(--color-rol);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.navbar[data-rol='ESTUDIANTE'] {
+  --color-rol: var(--rol-estudiante);
+}
+
+.navbar[data-rol='TUTOR'] {
+  --color-rol: var(--rol-tutor);
+}
+
+.navbar[data-rol='COORDINADOR'] {
+  --color-rol: var(--rol-coordinador);
+}
+
+.navbar-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.marca {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+ul {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  display: block;
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+nav a:hover,
+nav a.activo {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.navbar-derecha {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icono-rol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.usuario-nombre {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.usuario-id {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.boton-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-left: 0.25rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  transition: background 0.15s ease;
+}
+
+.boton-logout:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
