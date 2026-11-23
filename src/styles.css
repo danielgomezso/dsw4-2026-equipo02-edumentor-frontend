@@ -152,7 +152,6 @@ fieldset {
   background: var(--primario-oscuro);
 }
 
-/* Login y registro comparten la misma distribución, sin contenedores decorativos. */
 .auth-page {
   width: min(100%, 540px);
   margin: 0 auto;

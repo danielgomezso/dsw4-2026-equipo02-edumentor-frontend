@@ -6,8 +6,7 @@
 <div class="hub-toolbar">
   @if (identity.role() !== 'TUTOR') {
     <div class="hub-field">
-      <label for="tutor-filter">{{ i18n.t('tutor') }}</label
-      ><select
+      <label for="tutor-filter">{{ i18n.t('tutor') }}</label><select
         id="tutor-filter"
         [value]="tutorId()"
         (change)="tutorId.set(+$any($event.target).value)"
@@ -19,11 +18,18 @@
       </select>
     </div>
   }
-  <button class="hub-secondary" (click)="load()" [disabled]="loading() || busy()">
-    {{ i18n.t('refresh') }}
-  </button>
+  <div class="hub-toolbar-actions">
+    <button type="button" class="hub-secondary" (click)="load()" [disabled]="loading() || busy()">
+      {{ i18n.t('refresh') }}
+    </button>
+    @if (identity.role() === 'TUTOR') {
+      <button type="button" class="hub-button" (click)="openNew()" [disabled]="busy()">
+        {{ i18n.t('newSlot') }}
+      </button>
+    }
+  </div>
 </div>
-<div [class.hub-columns]="identity.role() === 'TUTOR'">
+<div>
   <section class="hub-panel">
     @for (slot of filtered(); track slot.id) {
       <article class="hub-list-row">
@@ -66,9 +72,21 @@
       }
     }
   </section>
-  @if (identity.role() === 'TUTOR') {
-    <form class="hub-panel" [formGroup]="form" (ngSubmit)="save()">
-      <h2>{{ i18n.t(editing() ? 'edit' : 'newSlot') }}</h2>
+</div>
+@if (identity.role() === 'TUTOR') {
+  <dialog #slotDialog class="hub-modal" aria-labelledby="slot-dialog-title" (close)="clear()">
+    <form class="hub-modal-form" [formGroup]="form" (ngSubmit)="save()">
+      <div class="hub-modal-heading">
+        <h2 id="slot-dialog-title">{{ i18n.t(editing() ? 'edit' : 'newSlot') }}</h2>
+        <button
+          type="button"
+          class="hub-modal-close"
+          [attr.aria-label]="i18n.t('cancel')"
+          (click)="clear()"
+        >
+          ×
+        </button>
+      </div>
       <fieldset [disabled]="busy()">
         <hub-field
           fieldId="slot-day"
@@ -92,12 +110,15 @@
         }
         <div class="hub-actions">
           <button class="hub-button" [disabled]="busy() || loading()">
-            {{ i18n.t(busy() ? 'saving' : 'save') }}</button
-          ><button type="button" class="hub-secondary" (click)="clear()">
+            {{ i18n.t(busy() ? 'saving' : 'save') }}</button><button
+            type="button"
+            class="hub-secondary"
+            (click)="clear()"
+          >
             {{ i18n.t('cancel') }}
           </button>
         </div>
       </fieldset>
     </form>
-  }
-</div>
+  </dialog>
+}

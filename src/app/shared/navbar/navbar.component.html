@@ -49,8 +49,7 @@
   <div class="demo-banner">
     <span>{{ i18n.t('demo') }}</span>
     <div class="demo-control">
-      <label for="demo-role">{{ i18n.t('demoRole') }}</label
-      ><select
+      <label for="demo-role">{{ i18n.t('demoRole') }}</label><select
         id="demo-role"
         [value]="identity.role()"
         (change)="identity.switchRole($any($event.target).value)"

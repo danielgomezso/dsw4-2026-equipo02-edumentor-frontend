@@ -1,4 +1,3 @@
-/* Estilos compartidos de las pantallas de Konny. Los colores se definen en styles.css. */
 .contenido:has(.hub-heading) {
   width: min(100%, calc(var(--ancho-contenido) + 48px));
   margin: auto;

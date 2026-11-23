@@ -5,8 +5,7 @@
 <hub-feedback [page]="this" />
 <div class="hub-toolbar">
   <div class="hub-field">
-    <label for="session-filter">{{ i18n.t('state') }}</label
-    ><select
+    <label for="session-filter">{{ i18n.t('state') }}</label><select
       id="session-filter"
       [value]="status()"
       (change)="status.set($any($event.target).value)"
@@ -17,11 +16,18 @@
       }
     </select>
   </div>
-  <button class="hub-secondary" [disabled]="loading() || busy()" (click)="load()">
-    {{ i18n.t('refresh') }}
-  </button>
+  <div class="hub-toolbar-actions">
+    <button type="button" class="hub-secondary" [disabled]="loading() || busy()" (click)="load()">
+      {{ i18n.t('refresh') }}
+    </button>
+    @if (identity.role() === 'ESTUDIANTE') {
+      <button type="button" class="hub-button" [disabled]="busy()" (click)="openBooking()">
+        {{ i18n.t('book') }}
+      </button>
+    }
+  </div>
 </div>
-<div [class.hub-columns]="identity.role() === 'ESTUDIANTE'">
+<div>
   <section class="hub-panel">
     <h2>{{ i18n.t('allSessions') }} ({{ filtered().length }})</h2>
     <p class="hub-muted">{{ i18n.t('cancelHint') }}</p>
@@ -30,8 +36,7 @@
         <div class="hub-section-title">
           <span class="hub-tag" [attr.data-state]="session.estado">{{
             i18n.t(session.estado)
-          }}</span
-          ><span>#{{ session.id }}</span>
+          }}</span><span>#{{ session.id }}</span>
         </div>
         <h3>{{ subject(session.materiaId) }}</h3>
         <p>{{ tutor(session.tutorId) }} · {{ i18n.t(session.modalidad) }}</p>
@@ -53,9 +58,26 @@
       }
     }
   </section>
-  @if (identity.role() === 'ESTUDIANTE') {
-    <form class="hub-panel" [formGroup]="form" (ngSubmit)="reserve()">
-      <h2>{{ i18n.t('book') }}</h2>
+</div>
+@if (identity.role() === 'ESTUDIANTE') {
+  <dialog
+    #bookingDialog
+    class="hub-modal"
+    aria-labelledby="booking-dialog-title"
+    (close)="closeBooking()"
+  >
+    <form class="hub-modal-form" [formGroup]="form" (ngSubmit)="reserve()">
+      <div class="hub-modal-heading">
+        <h2 id="booking-dialog-title">{{ i18n.t('book') }}</h2>
+        <button
+          type="button"
+          class="hub-modal-close"
+          [attr.aria-label]="i18n.t('cancel')"
+          (click)="closeBooking()"
+        >
+          ×
+        </button>
+      </div>
       <p class="hub-muted">{{ i18n.t('bookingHint') }}</p>
       <fieldset [disabled]="busy()">
         <hub-field
@@ -98,10 +120,16 @@
           [label]="i18n.t('summary')"
           [control]="form.controls.resumen"
           [maxLength]="2000"
-        /><button class="hub-button" [disabled]="busy() || loading()">
-          {{ i18n.t(busy() ? 'saving' : 'book') }}
-        </button>
+        />
+        <div class="hub-actions">
+          <button class="hub-button" [disabled]="busy() || loading()">
+            {{ i18n.t(busy() ? 'saving' : 'book') }}
+          </button>
+          <button type="button" class="hub-secondary" (click)="closeBooking()" [disabled]="busy()">
+            {{ i18n.t('cancel') }}
+          </button>
+        </div>
       </fieldset>
     </form>
-  }
-</div>
+  </dialog>
+}

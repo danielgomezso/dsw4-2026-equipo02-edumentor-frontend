@@ -4,8 +4,8 @@
   <p>{{ i18n.t('dashboardText') }}</p>
 </header>
 <div class="hub-shortcuts">
-  <a routerLink="/materias">{{ i18n.t('subjects') }} </a
-  ><a [routerLink]="identity.role() === 'ESTUDIANTE' ? '/tutores' : '/horarios'"
+  <a routerLink="/materias">{{ i18n.t('subjects') }} </a><a
+    [routerLink]="identity.role() === 'ESTUDIANTE' ? '/tutores' : '/horarios'"
     >{{ i18n.t(identity.role() === 'ESTUDIANTE' ? 'tutors' : 'schedule') }} </a
   ><a routerLink="/sesiones">{{ i18n.t('sessions') }} </a>
 </div>

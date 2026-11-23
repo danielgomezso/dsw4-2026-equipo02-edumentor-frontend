@@ -5,19 +5,25 @@
 <hub-feedback [page]="this" />
 <div class="hub-toolbar">
   <div class="hub-field">
-    <label for="subject-search">{{ i18n.t('search') }}</label
-    ><input
+    <label for="subject-search">{{ i18n.t('search') }}</label><input
       id="subject-search"
       type="search"
       [value]="query()"
       (input)="query.set($any($event.target).value)"
     />
   </div>
-  <button class="hub-secondary" [disabled]="loading() || busy()" (click)="load()">
-    {{ i18n.t('refresh') }}
-  </button>
+  <div class="hub-toolbar-actions">
+    <button type="button" class="hub-secondary" [disabled]="loading() || busy()" (click)="load()">
+      {{ i18n.t('refresh') }}
+    </button>
+    @if (identity.role() === 'COORDINADOR') {
+      <button type="button" class="hub-button" [disabled]="busy()" (click)="openNew()">
+        {{ i18n.t('newSubject') }}
+      </button>
+    }
+  </div>
 </div>
-<div [class.hub-columns]="identity.role() === 'COORDINADOR'">
+<div>
   <section class="hub-panel">
     <div class="hub-table-wrap">
       <table>
@@ -55,8 +61,7 @@
                     (click)="edit(item)"
                     [attr.aria-label]="i18n.t('edit') + ' ' + item.nombreMateria"
                   >
-                    {{ i18n.t('edit') }}</button
-                  ><button
+                    {{ i18n.t('edit') }}</button><button
                     class="hub-danger"
                     [disabled]="busy()"
                     (click)="remove(item)"
@@ -75,9 +80,21 @@
       <p class="hub-empty">{{ i18n.t('noResults') }}</p>
     }
   </section>
-  @if (identity.role() === 'COORDINADOR') {
-    <form class="hub-panel" [formGroup]="form" (ngSubmit)="save()">
-      <h2>{{ i18n.t(editing() ? 'editSubject' : 'newSubject') }}</h2>
+</div>
+@if (identity.role() === 'COORDINADOR') {
+  <dialog #subjectDialog class="hub-modal" aria-labelledby="subject-dialog-title" (close)="clear()">
+    <form class="hub-modal-form" [formGroup]="form" (ngSubmit)="save()">
+      <div class="hub-modal-heading">
+        <h2 id="subject-dialog-title">{{ i18n.t(editing() ? 'editSubject' : 'newSubject') }}</h2>
+        <button
+          type="button"
+          class="hub-modal-close"
+          [attr.aria-label]="i18n.t('cancel')"
+          (click)="clear()"
+        >
+          ×
+        </button>
+      </div>
       <fieldset [disabled]="busy()">
         <hub-field
           fieldId="subject-code"
@@ -103,12 +120,15 @@
         />
         <div class="hub-actions">
           <button class="hub-button" [disabled]="busy() || loading()">
-            {{ i18n.t(busy() ? 'saving' : 'save') }}</button
-          ><button type="button" class="hub-secondary" (click)="clear()">
+            {{ i18n.t(busy() ? 'saving' : 'save') }}</button><button
+            type="button"
+            class="hub-secondary"
+            (click)="clear()"
+          >
             {{ i18n.t('cancel') }}
           </button>
         </div>
       </fieldset>
     </form>
-  }
-</div>
+  </dialog>
+}
