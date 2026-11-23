@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, defer, delay, of } from 'rxjs';
+import { Observable, catchError, defer, delay, forkJoin, map, of, switchMap, throwError } from 'rxjs';
 import { API_URL } from '../../core/models/auth.models';
 import { I18nService } from '../../i18n/i18n.service';
 import { IdentityService } from './identity.service';
@@ -126,6 +126,14 @@ export class ApiService {
     return this.run('GET', '/usuarios/tutores', null, () => this.tutores);
   }
   listHorarios(tutorId?: number): Observable<Disponibilidad[]> {
+    if (!this.identity.demo && !tutorId) {
+      return this.listTutores().pipe(
+        switchMap((tutores) => tutores.length
+          ? forkJoin(tutores.map((tutor) => this.listHorarios(tutor.id)))
+              .pipe(map((horarios) => horarios.flat()))
+          : of([])),
+      );
+    }
     return this.run('GET', '/disponibilidades' + (tutorId ? '?tutorId=' + tutorId : ''), null, () =>
       this.horarios.filter((h) => !tutorId || h.tutorId === tutorId),
     );
@@ -222,7 +230,7 @@ export class ApiService {
     });
   }
   cancel(id: number): Observable<Sesion> {
-    return this.run('PATCH', '/sesiones/' + id + '/cancelacion', {}, () => {
+    return this.run('PATCH', '/sesiones/' + id + '/cancelar', {}, () => {
       const session = this.session(id);
       if (!this.allowed(session)) this.fail(403);
       if (!this.canCancel(session)) this.fail();
@@ -263,13 +271,20 @@ export class ApiService {
     });
   }
   listEvaluaciones(id: number): Observable<Evaluacion[]> {
-    return this.run('GET', '/sesiones/' + id + '/evaluaciones', null, () => {
+    if (!this.identity.demo) {
+      return this.http.get<Evaluacion>(API_URL + '/sesiones/' + id + '/evaluacion').pipe(
+        map((evaluacion) => [evaluacion]),
+        catchError((error: HttpErrorResponse) =>
+          error.status === 404 ? of([]) : throwError(() => error)),
+      );
+    }
+    return this.run('GET', '/sesiones/' + id + '/evaluacion', null, () => {
       if (!this.allowed(this.session(id))) this.fail(403);
       return this.evaluaciones.filter((e) => e.sesionId === id);
     });
   }
   evaluate(id: number, body: NuevaEvaluacion): Observable<Evaluacion> {
-    return this.run('POST', '/sesiones/' + id + '/evaluaciones', body, () => {
+    return this.run('POST', '/sesiones/' + id + '/evaluacion', body, () => {
       const session = this.session(id);
       if (
         this.identity.role() !== 'ESTUDIANTE' ||
