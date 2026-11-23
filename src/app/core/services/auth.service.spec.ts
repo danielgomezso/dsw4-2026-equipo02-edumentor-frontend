@@ -14,8 +14,6 @@ const mockResponse = (): AuthResponse => ({
     nombre: 'Sofia',
     apellido: 'Estudiante',
     rol: 'ESTUDIANTE',
-    activo: true,
-    fechaCreacion: '2026-01-01T00:00:00Z',
   },
 });
 
