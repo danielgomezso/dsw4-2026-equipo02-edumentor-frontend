@@ -12,8 +12,6 @@ export interface Usuario {
   nombre: string;
   apellido: string;
   rol: Rol;
-  activo: boolean;
-  fechaCreacion: string;
 }
 
 export interface LoginRequest {
