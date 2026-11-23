@@ -1,4 +1,106 @@
-<a routerLink="/sesiones">← {{ i18n.t('back') }}</a><header class="hub-heading"><h1>{{ i18n.t('session') }} #{{ id }}</h1>@if (session(); as item) { <p>{{ i18n.date(item.fechaHora) }} · {{ i18n.t(item.modalidad) }} · {{ item.duracionMinutos }} {{ i18n.t('minutes') }}</p><span class="hub-tag">{{ i18n.t(item.estado) }}</span><p>{{ item.resumen }}</p> }</header><hub-feedback [page]="this" />@if (failure()) { <button class="hub-secondary" (click)="load()">{{ i18n.t('retry') }}</button> }
-@if (session()) { <div class="hub-equal-columns"><section class="hub-panel"><h2>{{ i18n.t('resources') }}</h2>@for (resource of resources(); track resource.id) { <article class="hub-list-row"><div><h3>{{ resource.titulo }}</h3><p>{{ resource.tipoArchivo }}</p>@if (safeLink(resource.urlRecurso); as link) { <a [href]="link" target="_blank" rel="noopener noreferrer">{{ i18n.t('openResource') }} ↗</a> }</div>@if (canAdd) { <button class="hub-danger" (click)="remove(resource)" [disabled]="busy()" [attr.aria-label]="i18n.t('delete') + ' ' + resource.titulo">{{ i18n.t('delete') }}</button> }</article> } @empty { <p class="hub-empty">{{ i18n.t('empty') }}</p> }
-@if (canAdd) { <form [formGroup]="resourceForm" (ngSubmit)="add()"><h3>{{ i18n.t('addResource') }}</h3><fieldset [disabled]="busy()"><hub-field fieldId="resource-title" [label]="i18n.t('resourceTitle')" [control]="resourceForm.controls.titulo" [maxLength]="200" /><hub-field fieldId="resource-url" type="url" [label]="i18n.t('resourceUrl')" [control]="resourceForm.controls.urlRecurso" [maxLength]="2048" /><hub-field fieldId="resource-type" [label]="i18n.t('resourceType')" [control]="resourceForm.controls.tipoArchivo" [maxLength]="50" /><button class="hub-button" [disabled]="busy()">{{ i18n.t(busy() ? 'saving' : 'addResource') }}</button></fieldset></form> }</section>
-<section class="hub-panel"><h2>{{ i18n.t('evaluation') }}</h2>@for (review of reviews(); track review.id) { <p class="hub-rating">{{ review.calificacionEstrellas }} / 5</p><p>{{ review.comentario }}</p><p class="hub-muted">{{ i18n.date(review.fechaEvaluacion) }}</p> } @empty { <p>{{ i18n.t('noReview') }}</p> }<p class="hub-muted">{{ i18n.t('reviewHint') }}</p>@if (canReview) { <form [formGroup]="reviewForm" (ngSubmit)="evaluate()"><fieldset [disabled]="busy()"><hub-field fieldId="review-rating" type="select" [label]="i18n.t('rating')" [control]="reviewForm.controls.calificacionEstrellas" [options]="ratings" /><hub-field fieldId="review-comment" type="textarea" [label]="i18n.t('comment')" [control]="reviewForm.controls.comentario" [maxLength]="2000" /><button class="hub-button" [disabled]="busy()">{{ i18n.t(busy() ? 'saving' : 'sendReview') }}</button></fieldset></form> }</section></div> }
+<a class="hub-back" routerLink="/sesiones">{{ i18n.t('back') }}</a>
+<header class="hub-heading">
+  <h1>{{ i18n.t('session') }} #{{ id }}</h1>
+  @if (session(); as item) {
+    <p>
+      {{ i18n.date(item.fechaHora) }} · {{ i18n.t(item.modalidad) }} · {{ item.duracionMinutos }}
+      {{ i18n.t('minutes') }}
+    </p>
+    <span class="hub-tag">{{ i18n.t(item.estado) }}</span>
+    <p>{{ item.resumen }}</p>
+  }
+</header>
+<hub-feedback [page]="this" />
+@if (failure()) {
+  <button class="hub-secondary" (click)="load()">{{ i18n.t('retry') }}</button>
+}
+@if (session()) {
+  <div class="hub-equal-columns">
+    <section class="hub-panel">
+      <h2>{{ i18n.t('resources') }}</h2>
+      @for (resource of resources(); track resource.id) {
+        <article class="hub-list-row">
+          <div>
+            <h3>{{ resource.titulo }}</h3>
+            <p>{{ resource.tipoArchivo }}</p>
+            @if (safeLink(resource.urlRecurso); as link) {
+              <a [href]="link" target="_blank" rel="noopener noreferrer">{{
+                i18n.t('openResource')
+              }}</a>
+            }
+          </div>
+          @if (canAdd) {
+            <button
+              class="hub-danger"
+              (click)="remove(resource)"
+              [disabled]="busy()"
+              [attr.aria-label]="i18n.t('delete') + ' ' + resource.titulo"
+            >
+              {{ i18n.t('delete') }}
+            </button>
+          }
+        </article>
+      } @empty {
+        <p class="hub-empty">{{ i18n.t('empty') }}</p>
+      }
+      @if (canAdd) {
+        <form [formGroup]="resourceForm" (ngSubmit)="add()">
+          <h3>{{ i18n.t('addResource') }}</h3>
+          <fieldset [disabled]="busy()">
+            <hub-field
+              fieldId="resource-title"
+              [label]="i18n.t('resourceTitle')"
+              [control]="resourceForm.controls.titulo"
+              [maxLength]="200"
+            /><hub-field
+              fieldId="resource-url"
+              type="url"
+              [label]="i18n.t('resourceUrl')"
+              [control]="resourceForm.controls.urlRecurso"
+              [maxLength]="2048"
+            /><hub-field
+              fieldId="resource-type"
+              [label]="i18n.t('resourceType')"
+              [control]="resourceForm.controls.tipoArchivo"
+              [maxLength]="50"
+            /><button class="hub-button" [disabled]="busy()">
+              {{ i18n.t(busy() ? 'saving' : 'addResource') }}
+            </button>
+          </fieldset>
+        </form>
+      }
+    </section>
+    <section class="hub-panel">
+      <h2>{{ i18n.t('evaluation') }}</h2>
+      @for (review of reviews(); track review.id) {
+        <p class="hub-rating">{{ review.calificacionEstrellas }} / 5</p>
+        <p>{{ review.comentario }}</p>
+        <p class="hub-muted">{{ i18n.date(review.fechaEvaluacion) }}</p>
+      } @empty {
+        <p>{{ i18n.t('noReview') }}</p>
+      }
+      <p class="hub-muted">{{ i18n.t('reviewHint') }}</p>
+      @if (canReview) {
+        <form [formGroup]="reviewForm" (ngSubmit)="evaluate()">
+          <fieldset [disabled]="busy()">
+            <hub-field
+              fieldId="review-rating"
+              type="select"
+              [label]="i18n.t('rating')"
+              [control]="reviewForm.controls.calificacionEstrellas"
+              [options]="ratings"
+            /><hub-field
+              fieldId="review-comment"
+              type="textarea"
+              [label]="i18n.t('comment')"
+              [control]="reviewForm.controls.comentario"
+              [maxLength]="2000"
+            /><button class="hub-button" [disabled]="busy()">
+              {{ i18n.t(busy() ? 'saving' : 'sendReview') }}
+            </button>
+          </fieldset>
+        </form>
+      }
+    </section>
+  </div>
+}

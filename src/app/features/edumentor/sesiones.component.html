@@ -1,5 +1,107 @@
-<header class="hub-heading"><p class="hub-eyebrow">EDUMENTOR HUB / {{ i18n.t('allSessions') }}</p><h1>{{ i18n.t(identity.role() === 'COORDINADOR' ? 'allSessions' : 'sessions') }}</h1><p>{{ i18n.t('sessionIntro') }}</p></header><hub-feedback [page]="this" />
-<div class="hub-toolbar"><div class="hub-field"><label for="session-filter">{{ i18n.t('state') }}</label><select id="session-filter" [value]="status()" (change)="status.set($any($event.target).value)"><option value="">{{ i18n.t('allStates') }}</option>@for (state of states; track state) { <option [value]="state">{{ i18n.t(state) }}</option> }</select></div><button class="hub-secondary" [disabled]="loading() || busy()" (click)="load()">{{ i18n.t('refresh') }}</button></div>
-<div [class.hub-columns]="identity.role() === 'ESTUDIANTE'"><section class="hub-panel"><h2>{{ i18n.t('allSessions') }} ({{ filtered().length }})</h2><p class="hub-muted">{{ i18n.t('cancelHint') }}</p>
-@for (session of filtered(); track session.id) { <article class="hub-session"><div class="hub-section-title"><span class="hub-tag" [attr.data-state]="session.estado">{{ i18n.t(session.estado) }}</span><span>#{{ session.id }}</span></div><h3>{{ subject(session.materiaId) }}</h3><p>{{ tutor(session.tutorId) }} · {{ i18n.t(session.modalidad) }}</p><p>{{ i18n.date(session.fechaHora) }} · {{ session.duracionMinutos }} {{ i18n.t('minutes') }}</p><div class="hub-actions"><a [routerLink]="['/sesiones',session.id]">{{ i18n.t('details') }}</a>@if (api.canCancel(session)) { <button class="hub-danger" (click)="cancel(session)" [disabled]="busy()">{{ i18n.t('cancel') }}</button> }</div></article> } @empty { @if (!loading() && !failure()) { <p class="hub-empty">{{ i18n.t('noResults') }}</p> } }
-</section>@if (identity.role() === 'ESTUDIANTE') { <form class="hub-panel" [formGroup]="form" (ngSubmit)="reserve()"><h2>{{ i18n.t('book') }}</h2><p class="hub-muted">{{ i18n.t('bookingHint') }}</p><fieldset [disabled]="busy()"><hub-field fieldId="booking-tutor" type="select" [label]="i18n.t('tutor')" [control]="form.controls.tutorId" [options]="tutorOptions" /><hub-field fieldId="booking-subject" type="select" [label]="i18n.t('subject')" [control]="form.controls.materiaId" [options]="subjectOptions" /><hub-field fieldId="booking-date" type="datetime-local" [label]="i18n.t('date')" [control]="form.controls.fechaHora" />@if (invalidDate()) { <p class="error" role="alert">{{ i18n.t('future') }}</p> }<hub-field fieldId="booking-duration" type="number" [label]="i18n.t('duration')" [control]="form.controls.duracionMinutos" [min]="15" [max]="240" /><hub-field fieldId="booking-mode" type="select" [label]="i18n.t('mode')" [control]="form.controls.modalidad" [options]="modes" /><hub-field fieldId="booking-summary" type="textarea" [label]="i18n.t('summary')" [control]="form.controls.resumen" [maxLength]="2000" /><button class="hub-button" [disabled]="busy() || loading()">{{ i18n.t(busy() ? 'saving' : 'book') }}</button></fieldset></form> }</div>
+<header class="hub-heading">
+  <h1>{{ i18n.t(identity.role() === 'COORDINADOR' ? 'allSessions' : 'sessions') }}</h1>
+  <p>{{ i18n.t('sessionIntro') }}</p>
+</header>
+<hub-feedback [page]="this" />
+<div class="hub-toolbar">
+  <div class="hub-field">
+    <label for="session-filter">{{ i18n.t('state') }}</label
+    ><select
+      id="session-filter"
+      [value]="status()"
+      (change)="status.set($any($event.target).value)"
+    >
+      <option value="">{{ i18n.t('allStates') }}</option>
+      @for (state of states; track state) {
+        <option [value]="state">{{ i18n.t(state) }}</option>
+      }
+    </select>
+  </div>
+  <button class="hub-secondary" [disabled]="loading() || busy()" (click)="load()">
+    {{ i18n.t('refresh') }}
+  </button>
+</div>
+<div [class.hub-columns]="identity.role() === 'ESTUDIANTE'">
+  <section class="hub-panel">
+    <h2>{{ i18n.t('allSessions') }} ({{ filtered().length }})</h2>
+    <p class="hub-muted">{{ i18n.t('cancelHint') }}</p>
+    @for (session of filtered(); track session.id) {
+      <article class="hub-session">
+        <div class="hub-section-title">
+          <span class="hub-tag" [attr.data-state]="session.estado">{{
+            i18n.t(session.estado)
+          }}</span
+          ><span>#{{ session.id }}</span>
+        </div>
+        <h3>{{ subject(session.materiaId) }}</h3>
+        <p>{{ tutor(session.tutorId) }} · {{ i18n.t(session.modalidad) }}</p>
+        <p>
+          {{ i18n.date(session.fechaHora) }} · {{ session.duracionMinutos }} {{ i18n.t('minutes') }}
+        </p>
+        <div class="hub-actions">
+          <a [routerLink]="['/sesiones', session.id]">{{ i18n.t('details') }}</a>
+          @if (api.canCancel(session)) {
+            <button class="hub-danger" (click)="cancel(session)" [disabled]="busy()">
+              {{ i18n.t('cancel') }}
+            </button>
+          }
+        </div>
+      </article>
+    } @empty {
+      @if (!loading() && !failure()) {
+        <p class="hub-empty">{{ i18n.t('noResults') }}</p>
+      }
+    }
+  </section>
+  @if (identity.role() === 'ESTUDIANTE') {
+    <form class="hub-panel" [formGroup]="form" (ngSubmit)="reserve()">
+      <h2>{{ i18n.t('book') }}</h2>
+      <p class="hub-muted">{{ i18n.t('bookingHint') }}</p>
+      <fieldset [disabled]="busy()">
+        <hub-field
+          fieldId="booking-tutor"
+          type="select"
+          [label]="i18n.t('tutor')"
+          [control]="form.controls.tutorId"
+          [options]="tutorOptions"
+        /><hub-field
+          fieldId="booking-subject"
+          type="select"
+          [label]="i18n.t('subject')"
+          [control]="form.controls.materiaId"
+          [options]="subjectOptions"
+        /><hub-field
+          fieldId="booking-date"
+          type="datetime-local"
+          [label]="i18n.t('date')"
+          [control]="form.controls.fechaHora"
+        />
+        @if (invalidDate()) {
+          <p class="error" role="alert">{{ i18n.t('future') }}</p>
+        }
+        <hub-field
+          fieldId="booking-duration"
+          type="number"
+          [label]="i18n.t('duration')"
+          [control]="form.controls.duracionMinutos"
+          [min]="15"
+          [max]="240"
+        /><hub-field
+          fieldId="booking-mode"
+          type="select"
+          [label]="i18n.t('mode')"
+          [control]="form.controls.modalidad"
+          [options]="modes"
+        /><hub-field
+          fieldId="booking-summary"
+          type="textarea"
+          [label]="i18n.t('summary')"
+          [control]="form.controls.resumen"
+          [maxLength]="2000"
+        /><button class="hub-button" [disabled]="busy() || loading()">
+          {{ i18n.t(busy() ? 'saving' : 'book') }}
+        </button>
+      </fieldset>
+    </form>
+  }
+</div>
