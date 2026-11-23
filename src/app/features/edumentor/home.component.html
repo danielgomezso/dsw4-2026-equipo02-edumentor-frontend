@@ -1,0 +1,46 @@
+<section class="inicio" aria-labelledby="inicio-titulo">
+  <div class="inicio-contenido">
+    <h1 id="inicio-titulo">{{ i18n.t('homeTitle') }}</h1>
+    <p class="descripcion">{{ i18n.t('homeDescription') }}</p>
+    <form class="buscador" role="search" (submit)="buscar($event)">
+      <div class="buscador-campo">
+        <label for="inicio-busqueda">{{ i18n.t('searchPrompt') }}</label>
+        <input
+          id="inicio-busqueda"
+          type="search"
+          [formControl]="busqueda"
+          [placeholder]="i18n.t('searchExample')"
+        />
+      </div>
+      <button type="submit" class="hub-button">{{ i18n.t('searchAction') }}</button>
+    </form>
+    <nav class="materias-inicio" [attr.aria-label]="i18n.t('exploreSubjects')">
+      <a routerLink="/materias" [queryParams]="{ q: 'Matemática' }">{{ i18n.t('mathSubject') }}</a>
+      <a routerLink="/materias" [queryParams]="{ q: 'Software' }">{{
+        i18n.t('softwareSubject')
+      }}</a>
+      <a routerLink="/materias" [queryParams]="{ q: 'Bases de datos' }">{{
+        i18n.t('databaseSubject')
+      }}</a>
+    </nav>
+  </div>
+</section>
+<section class="inicio-seccion" aria-labelledby="explorar-titulo">
+  <h2 id="explorar-titulo">{{ i18n.t('exploreSubjects') }}</h2>
+  <p>{{ i18n.t('subjectIntro') }}</p>
+  <a routerLink="/materias">{{ i18n.t('allSubjects') }}</a>
+</section>
+<section class="inicio-seccion" aria-labelledby="funciona-titulo">
+  <h2 id="funciona-titulo">{{ i18n.t('howItWorks') }}</h2>
+  <ol class="pasos">
+    @for (step of steps; track step.title) {
+      <li>
+        <h3>{{ i18n.t(step.title) }}</h3>
+        <p>{{ i18n.t(step.text) }}</p>
+      </li>
+    }
+  </ol>
+  <a class="hub-button" [routerLink]="identity.user() ? '/tutores' : '/registro'">{{
+    i18n.t(identity.user() ? 'tutors' : 'register')
+  }}</a>
+</section>

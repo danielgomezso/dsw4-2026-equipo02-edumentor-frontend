@@ -1,3 +1,4 @@
+import { I18nService } from '../../../i18n/i18n.service';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -10,6 +11,7 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './registro.component.html',
 })
 export class RegistroComponent {
+  readonly i18n = inject(I18nService);
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
@@ -23,7 +25,10 @@ export class RegistroComponent {
   ];
 
   protected readonly form = this.fb.nonNullable.group({
-    carne: ['', [Validators.required, Validators.maxLength(20), Validators.pattern(/^[A-Za-z0-9-]+$/)]],
+    carne: [
+      '',
+      [Validators.required, Validators.maxLength(20), Validators.pattern(/^[A-Za-z0-9-]+$/)],
+    ],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
     password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
     nombre: ['', [Validators.required, Validators.maxLength(100)]],

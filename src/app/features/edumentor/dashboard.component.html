@@ -1,0 +1,36 @@
+<header class="hub-heading">
+  <p class="hub-eyebrow">{{ i18n.t('hello') }}, {{ identity.user()?.nombre }}</p>
+  <h1>{{ i18n.t('dashboard') }}</h1>
+  <p>{{ i18n.t('dashboardText') }}</p>
+</header>
+<div class="hub-shortcuts">
+  <a routerLink="/materias">{{ i18n.t('subjects') }} </a><a
+    [routerLink]="identity.role() === 'ESTUDIANTE' ? '/tutores' : '/horarios'"
+    >{{ i18n.t(identity.role() === 'ESTUDIANTE' ? 'tutors' : 'schedule') }} </a
+  ><a routerLink="/sesiones">{{ i18n.t('sessions') }} </a>
+</div>
+<section class="hub-panel">
+  <div class="hub-section-title">
+    <h2>{{ i18n.t('upcoming') }}</h2>
+    <a routerLink="/sesiones">{{ i18n.t('openSessions') }}</a>
+  </div>
+  <hub-feedback [page]="this" />
+  @if (failure()) {
+    <button class="hub-secondary" (click)="load()">{{ i18n.t('retry') }}</button>
+  }
+  @for (session of sessions(); track session.id) {
+    <article class="hub-list-row">
+      <div>
+        <h3>{{ i18n.t('session') }} #{{ session.id }}</h3>
+        <p>
+          {{ i18n.date(session.fechaHora) }} · {{ session.duracionMinutos }} {{ i18n.t('minutes') }}
+        </p>
+      </div>
+      <a [routerLink]="['/sesiones', session.id]">{{ i18n.t('details') }}</a>
+    </article>
+  } @empty {
+    @if (!loading() && !failure()) {
+      <p class="hub-empty">{{ i18n.t('emptyUpcoming') }}</p>
+    }
+  }
+</section>

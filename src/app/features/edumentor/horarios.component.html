@@ -1,0 +1,124 @@
+<header class="hub-heading">
+  <h1>{{ profile ? profile.nombre + ' ' + profile.apellido : i18n.t('schedule') }}</h1>
+  <p>{{ i18n.t('availabilityIntro') }}</p>
+</header>
+<hub-feedback [page]="this" />
+<div class="hub-toolbar">
+  @if (identity.role() !== 'TUTOR') {
+    <div class="hub-field">
+      <label for="tutor-filter">{{ i18n.t('tutor') }}</label><select
+        id="tutor-filter"
+        [value]="tutorId()"
+        (change)="tutorId.set(+$any($event.target).value)"
+      >
+        <option value="0">{{ i18n.t('all') }}</option>
+        @for (t of tutors(); track t.id) {
+          <option [value]="t.id">{{ t.nombre }} {{ t.apellido }}</option>
+        }
+      </select>
+    </div>
+  }
+  <div class="hub-toolbar-actions">
+    <button type="button" class="hub-secondary" (click)="load()" [disabled]="loading() || busy()">
+      {{ i18n.t('refresh') }}
+    </button>
+    @if (identity.role() === 'TUTOR') {
+      <button type="button" class="hub-button" (click)="openNew()" [disabled]="busy()">
+        {{ i18n.t('newSlot') }}
+      </button>
+    }
+  </div>
+</div>
+<div>
+  <section class="hub-panel">
+    @for (slot of filtered(); track slot.id) {
+      <article class="hub-list-row">
+        <div>
+          <h2>
+            {{ i18n.day(slot.diaSemana) }} · {{ slot.horaInicio.slice(0, 5) }}–{{
+              slot.horaFin.slice(0, 5)
+            }}
+          </h2>
+          <p>
+            {{ tutorName(slot.tutorId) }} · {{ i18n.t(slot.estaActivo ? 'active' : 'inactive') }}
+          </p>
+        </div>
+        <div class="hub-actions">
+          @if (identity.role() === 'ESTUDIANTE') {
+            <a
+              class="hub-button"
+              routerLink="/sesiones"
+              [queryParams]="{ tutorId: slot.tutorId }"
+              >{{ i18n.t('book') }}</a
+            >
+          }
+          @if (identity.role() === 'TUTOR') {
+            <button class="hub-secondary" [disabled]="busy()" (click)="edit(slot)">
+              {{ i18n.t('edit') }}</button><button
+              class="hub-secondary"
+              [disabled]="busy()"
+              (click)="toggle(slot)"
+            >
+              {{ i18n.t(slot.estaActivo ? 'deactivate' : 'activate') }}</button
+            ><button class="hub-danger" [disabled]="busy()" (click)="remove(slot)">
+              {{ i18n.t('delete') }}
+            </button>
+          }
+        </div>
+      </article>
+    } @empty {
+      @if (!loading() && !failure()) {
+        <p class="hub-empty">{{ i18n.t('noSlot') }}</p>
+      }
+    }
+  </section>
+</div>
+@if (identity.role() === 'TUTOR') {
+  <dialog #slotDialog class="hub-modal" aria-labelledby="slot-dialog-title" (close)="clear()">
+    <form class="hub-modal-form" [formGroup]="form" (ngSubmit)="save()">
+      <div class="hub-modal-heading">
+        <h2 id="slot-dialog-title">{{ i18n.t(editing() ? 'edit' : 'newSlot') }}</h2>
+        <button
+          type="button"
+          class="hub-modal-close"
+          [attr.aria-label]="i18n.t('cancel')"
+          (click)="clear()"
+        >
+          ×
+        </button>
+      </div>
+      <fieldset [disabled]="busy()">
+        <hub-field
+          fieldId="slot-day"
+          type="select"
+          [label]="i18n.t('day')"
+          [control]="form.controls.diaSemana"
+          [options]="days"
+        /><hub-field
+          fieldId="slot-start"
+          type="time"
+          [label]="i18n.t('startTime')"
+          [control]="form.controls.horaInicio"
+        /><hub-field
+          fieldId="slot-end"
+          type="time"
+          [label]="i18n.t('endTime')"
+          [control]="form.controls.horaFin"
+        />
+        @if (form.hasError('range') && form.touched) {
+          <p class="error" role="alert">{{ i18n.t('invalidRange') }}</p>
+        }
+        <div class="hub-actions">
+          <button class="hub-button" [disabled]="busy() || loading()">
+            {{ i18n.t(busy() ? 'saving' : 'save') }}</button><button
+            type="button"
+            class="hub-secondary"
+            (click)="clear()"
+          >
+            {{ i18n.t('cancel') }}
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </dialog>
+}

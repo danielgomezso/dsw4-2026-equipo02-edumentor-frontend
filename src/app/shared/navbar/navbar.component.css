@@ -1,113 +1,181 @@
+:host {
+  display: block;
+  font-family: Arial, sans-serif;
+  background: #fff;
+}
+
 .navbar {
-  --color-rol: var(--primario);
+  width: 100%;
+  max-width: 1200px;
+  min-height: 76px;
+  margin: 0 auto;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.65rem 1.5rem;
-  background: var(--color-rol);
-  color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-}
-
-.navbar[data-rol='ESTUDIANTE'] {
-  --color-rol: var(--rol-estudiante);
-}
-
-.navbar[data-rol='TUTOR'] {
-  --color-rol: var(--rol-tutor);
-}
-
-.navbar[data-rol='COORDINADOR'] {
-  --color-rol: var(--rol-coordinador);
-}
-
-.navbar-izquierda {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  background: white;
 }
 
 .marca {
-  color: #fff;
+  color: #673ab7;
+  font:
+    700 22px Arial,
+    sans-serif;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 1.15rem;
-  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
-ul {
+nav {
   display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  flex-wrap: wrap;
+  gap: 6px 22px;
 }
 
 nav a {
-  display: block;
-  color: rgba(255, 255, 255, 0.92);
+  display: inline-block;
+  padding: 10px 0;
+  border-bottom: 2px solid transparent;
+  color: #262626;
   text-decoration: none;
-  font-size: 0.92rem;
-  font-weight: 500;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  transition: background 0.15s ease;
+  font:
+    15px Arial,
+    sans-serif;
 }
 
 nav a:hover,
 nav a.activo {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.16);
+  color: #673ab7;
+  border-bottom-color: #673ab7;
+  text-decoration: none;
 }
 
-.navbar-derecha {
+.navbar-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.icono-rol {
+.language,
+.logout {
+  min-height: 42px;
+  padding: 8px 0;
+  border: 0;
+  background: white;
+  color: #333;
+  font:
+    15px Arial,
+    sans-serif;
+  cursor: pointer;
+}
+
+.language:hover,
+.logout:hover {
+  color: #673ab7;
+  text-decoration: none;
+}
+
+.navbar-actions > a {
+  color: #673ab7;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.user {
+  font-size: 15px;
+  color: #666;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  z-index: 100;
+  padding: 12px 20px;
+  color: #673ab7;
+  background: #fff;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+:host a:focus-visible,
+:host button:focus-visible,
+:host select:focus-visible {
+  outline: 3px solid #7950c3;
+  outline-offset: 3px;
+}
+
+/* La franja de demostración queda presente, pero discreta. */
+.demo-banner {
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  padding: 8px 20px;
+  color: #666;
+  background: #faf9fd;
+  border-block: 1px solid #eee9f3;
+  font-size: 13px;
 }
 
-.usuario-info {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.usuario-nombre {
-  font-weight: 600;
-  font-size: 0.92rem;
-}
-
-.usuario-id {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.boton-logout {
+.demo-control {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  margin-left: 0.25rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
-  transition: background 0.15s ease;
+  gap: 9px;
 }
 
-.boton-logout:hover {
-  background: rgba(255, 255, 255, 0.28);
+.demo-control label {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.demo-control select {
+  width: auto;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 6px 28px 6px 10px;
+  border: 1px solid #d9d5e1;
+  border-radius: 7px;
+  background: white;
+  color: #262626;
+  font:
+    13px Arial,
+    sans-serif;
+}
+
+@media (max-width: 850px) {
+  .navbar {
+    padding: 16px 20px;
+    gap: 12px 18px;
+  }
+
+  nav {
+    order: 3;
+    width: 100%;
+    gap: 3px 17px;
+  }
+
+  .navbar-actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 500px) {
+  .marca {
+    font-size: 20px;
+  }
+
+  nav a {
+    font-size: 14px;
+  }
+
+  .demo-banner {
+    justify-content: flex-start;
+  }
 }
