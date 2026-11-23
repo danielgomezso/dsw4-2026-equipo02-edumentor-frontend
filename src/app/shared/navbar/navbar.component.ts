@@ -1,8 +1,7 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ROLE_PERMISSIONS } from '../../core/models/auth.models';
-import { AuthService } from '../../core/services/auth.service';
-
+import { IdentityService } from '../../features/edumentor/identity.service';
+import { I18nService } from '../../i18n/i18n.service';
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink, RouterLinkActive],
@@ -10,14 +9,6 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
-  protected readonly auth = inject(AuthService);
-
-  protected readonly permissions = computed(() => {
-    const role = this.auth.role();
-    return role ? ROLE_PERMISSIONS[role] : [];
-  });
-
-  logout(): void {
-    this.auth.logout();
-  }
+  readonly identity = inject(IdentityService);
+  readonly i18n = inject(I18nService);
 }

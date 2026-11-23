@@ -1,0 +1,36 @@
+<header class="hub-heading">
+  <h1>{{ i18n.t('tutors') }}</h1>
+  <p>{{ i18n.t('tutorIntro') }}</p>
+</header>
+<hub-feedback [page]="this" />
+<div class="hub-toolbar">
+  <div class="hub-field">
+    <label for="tutor-search">{{ i18n.t('searchTutor') }}</label><input
+      type="search"
+      id="tutor-search"
+      [value]="query()"
+      (input)="query.set($any($event.target).value)"
+    />
+  </div>
+  <button class="hub-secondary" (click)="load()" [disabled]="loading()">
+    {{ i18n.t('refresh') }}
+  </button>
+</div>
+<section class="hub-tutor-list">
+  @for (tutor of filtered(); track tutor.id) {
+    <article class="hub-tutor">
+      <div>
+        <h2>{{ tutor.nombre }} {{ tutor.apellido }}</h2>
+        <p class="hub-muted">{{ i18n.t('community') }}</p>
+        <p>{{ i18n.t('availabilityIntro') }}</p>
+      </div>
+      <a class="hub-button" routerLink="/horarios" [queryParams]="{ tutorId: tutor.id }">{{
+        i18n.t('profile')
+      }}</a>
+    </article>
+  } @empty {
+    @if (!loading() && !failure()) {
+      <p class="hub-empty">{{ i18n.t('noResults') }}</p>
+    }
+  }
+</section>
